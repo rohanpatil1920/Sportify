@@ -1,0 +1,5 @@
+package com.project.pojos;
+
+public enum Locality {
+	KOTHRUD, SINGHAGAD_ROAD, KARVENAGAR, DECCAN, DP_ROAD, GURUGANESH_NAGAR, SAHAKAR_NAGAR, AAPTE_ROAD
+}
