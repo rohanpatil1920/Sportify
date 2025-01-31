@@ -15,7 +15,7 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "blogs")
-@ToString(callSuper = true, exclude = { "author" })
+@ToString(callSuper = true, exclude = { "author" ,"category"})
 @NoArgsConstructor
 @Getter
 @Setter
