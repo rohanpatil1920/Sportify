@@ -2,6 +2,7 @@ package com.project.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.project.pojos.BlogCategory;
+import com.project.pojos.Player;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
