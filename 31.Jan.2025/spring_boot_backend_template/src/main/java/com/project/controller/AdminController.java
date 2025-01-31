@@ -6,11 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,17 +16,15 @@ import com.project.dto.AdminDto;
 import com.project.dto.UserDTO;
 import com.project.service.AdminService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
-import jakarta.validation.Valid;
-
 @RestController
 @RequestMapping("/admins")
 @Validated
 public class AdminController {
 
+	@Autowired
 	private final AdminService adminService;
 
-	@Autowired
+	
 	public AdminController(AdminService adminService) {
 		this.adminService = adminService;
 	}
@@ -44,24 +39,6 @@ public class AdminController {
 		}
 	}
 
-	@PostMapping
-	public ResponseEntity<AdminDto> createAdmin(@Valid @RequestBody AdminDto adminDto) {
-		AdminDto createdAdmin = adminService.createAdmin(adminDto); // Assuming you have a method for creating Admin
-		return new ResponseEntity<>(createdAdmin, HttpStatus.CREATED);
-	}
-
-	
-
-	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deleteAdmin(@PathVariable Long id) {
-		try {
-			adminService.deleteAdmin(id);
-			return new ResponseEntity<>("Admin deleted successfully", HttpStatus.NO_CONTENT);
-		} catch (AdminNotFoundException ex) {
-			return new ResponseEntity<>("Admin not found", HttpStatus.NOT_FOUND);
-		}
-	}
-
 	@GetMapping("/players")
 	public ResponseEntity<List<UserDTO>> getAllPlayers() {
 		List<UserDTO> players = adminService.getAllPlayers(); // Call the service method to get all players
@@ -71,7 +48,7 @@ public class AdminController {
 	@GetMapping("/facility-owners")
 	public ResponseEntity<List<UserDTO>> getAllFacilityOwners() {
 		List<UserDTO> facilityOwners = adminService.getAllFacilityOwners(); // Call the service method to get
-																						// all facility owners
+																			// all facility owners
 		return new ResponseEntity<>(facilityOwners, HttpStatus.OK);
 	}
 }

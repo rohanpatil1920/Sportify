@@ -51,7 +51,4 @@ public class AdminServiceImpl implements AdminService {
 		return modelMapper.map(admin, AdminDto.class);
 	}
 
-	
-
-	
 }
