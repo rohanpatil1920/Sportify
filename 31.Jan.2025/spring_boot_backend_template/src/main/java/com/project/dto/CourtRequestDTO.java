@@ -33,3 +33,4 @@ public class CourtRequestDTO {
 	@Positive(message = "Price must be greater than 0")
 	private BigDecimal pricePerHour;
 }
+

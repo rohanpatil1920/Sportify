@@ -22,7 +22,7 @@ public class UserLoginRequestDTO {
 	@Email(message = "Invalid email format")
 	private String email;
 	@NotBlank
-	@Pattern(regexp = "((?=.*\\d)(?=.*[a-zA-Z])(?=.*[#@$*]).{8,20})", message = "Password must be 8+ characters, include letters, numbers, and special characters (#@$*)")
+	@Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,20}$", message = "Password must be 8+ characters, include letters, numbers, and special characters (#@$*)")
 	private String password;
 
 }

@@ -24,5 +24,5 @@ public class UserResponseDTO {
 	private String contact;
 	@JsonProperty(access = Access.READ_ONLY)
 	private UserRole role;
-	private boolean isActive;
+	private Boolean isActive;
 }
