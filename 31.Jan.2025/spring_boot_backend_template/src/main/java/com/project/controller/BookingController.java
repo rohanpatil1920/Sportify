@@ -31,7 +31,7 @@ public class BookingController {
 
 	@PostMapping("/{playerId}/create")
 	public ResponseEntity<ApiResponse> createBooking(@PathVariable Long playerId,
-			@RequestBody @Valid BookingRequestDTO bookingRequestDTO) {
+			@org.springframework.web.bind.annotation.RequestBody @Valid BookingRequestDTO bookingRequestDTO) {
 		return ResponseEntity.ok(bookingService.addBooking(bookingRequestDTO, playerId));
 	}
 
@@ -42,7 +42,7 @@ public class BookingController {
 
 	@PutMapping("/{playerId}/update/{bookingId}")
 	public ResponseEntity<ApiResponse> updateBooking(@PathVariable Long playerId, @PathVariable Long bookingId,
-			@RequestBody @Valid BookingRequestDTO bookingRequestDTO) {
+			@org.springframework.web.bind.annotation.RequestBody @Valid BookingRequestDTO bookingRequestDTO) {
 		return ResponseEntity.ok(bookingService.updateBooking(playerId, bookingId, bookingRequestDTO));
 	}
 

@@ -1,5 +1,6 @@
 package com.project.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,14 +10,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.custom_exception.AdminNotFoundException;
+import com.project.custom_exception.ApiException;
 import com.project.dto.AdminDto;
+import com.project.dto.ApiResponse;
+import com.project.dto.DeletionRequestDTO;
 import com.project.dto.UserDTO;
 import com.project.pojos.Admin;
+import com.project.pojos.DeletionRequest;
+import com.project.pojos.DeletionStatus;
 import com.project.pojos.FacilityOwner;
 import com.project.pojos.Player;
+import com.project.pojos.User;
 import com.project.repository.AdminRepository;
+import com.project.repository.DeletionRequestRepository;
 import com.project.repository.FacilityOwnerRepository;
 import com.project.repository.PlayerRepository;
+import com.project.repository.UserRepository;
 
 @Service
 @Transactional
@@ -29,6 +38,11 @@ public class AdminServiceImpl implements AdminService {
 	private FacilityOwnerRepository facilityOwnerRepository;
 	@Autowired
 	private ModelMapper modelMapper;
+	@Autowired
+	private DeletionRequestRepository deletionRequestRepository;
+
+	@Autowired
+	private UserRepository userRepository;
 
 	@Override
 	public List<UserDTO> getAllPlayers() {
@@ -49,6 +63,42 @@ public class AdminServiceImpl implements AdminService {
 		Admin admin = adminRepository.findById(id)
 				.orElseThrow(() -> new AdminNotFoundException("Admin not found with id " + id));
 		return modelMapper.map(admin, AdminDto.class);
+	}
+
+	@Override
+	public List<DeletionRequestDTO> getPendingDeletionRequests() {
+		List<DeletionRequest> requests = deletionRequestRepository.findByStatus(DeletionStatus.PENDING);
+
+		return requests.stream()
+				.map(request -> new DeletionRequestDTO(request.getId(), request.getUser().getId(),
+						request.getUser().getUsername(), request.getReason(), request.getStatus(),
+						request.getCreatedOn()))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public ApiResponse processDeletionRequest(Long adminId, Long requestId, boolean approve) {
+		Admin admin = adminRepository.findById(adminId).orElseThrow(() -> new ApiException("Admin not found"));
+
+		DeletionRequest request = deletionRequestRepository.findById(requestId)
+				.orElseThrow(() -> new ApiException("Deletion request not found"));
+
+		if (approve) {
+			User user = request.getUser();
+			user.setIsActive(false);
+			userRepository.save(user);
+
+			request.setStatus(DeletionStatus.APPROVED);
+			request.setApprovedBy(admin);
+			request.setApprovedOn(LocalDateTime.now());
+			deletionRequestRepository.save(request);
+			return new ApiResponse("Deletion request approved successfully.");
+		} else {
+			request.setStatus(DeletionStatus.REJECTED);
+			deletionRequestRepository.save(request);
+			return new ApiResponse("Deletion request rejected.");
+		}
+
 	}
 
 }
