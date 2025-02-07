@@ -3,6 +3,7 @@ package com.project.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,9 +12,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.dto.ApiResponse;
+import com.project.dto.CourtRequestDTO;
+import com.project.dto.CourtResponseDTO;
+import com.project.dto.SportRequestDTO;
+import com.project.dto.SportResponseDTO;
 import com.project.dto.VenueRequestDTO;
 import com.project.dto.VenueResponseDTO;
 import com.project.service.VenueService;
@@ -36,19 +42,74 @@ public class VenueController {
 
 	@PutMapping("/{ownerId}/update/{venueId}")
 	public ResponseEntity<ApiResponse> updateVenue(@PathVariable Long ownerId, @PathVariable Long venueId,
-			@RequestBody @Valid VenueRequestDTO venueDTO) {
-		return ResponseEntity.ok(venueService.updateVenue(ownerId, venueId, venueDTO));
-	}
-
-	@GetMapping("/{locality}/{sportName}/")
-	public ResponseEntity<List<VenueResponseDTO>> getVenues(@PathVariable String locality,
-			@PathVariable String sportName, boolean available) {
-		return ResponseEntity.ok(venueService.getVenues(locality, sportName, available));
+			@RequestParam @Valid String name, String description) {
+		return ResponseEntity.ok(venueService.updateVenue(ownerId, venueId, name, description));
 	}
 
 	@DeleteMapping("/{ownerId}/delete/{venueId}")
-	public ResponseEntity<ApiResponse> deleteBooking(@PathVariable Long ownerId, @PathVariable Long venueId) {
+	public ResponseEntity<ApiResponse> deletevenue(@PathVariable Long ownerId, @PathVariable Long venueId) {
 		return ResponseEntity.ok(venueService.deleteVenue(ownerId, venueId));
+	}
+
+	@GetMapping("/search")
+	public ResponseEntity<List<VenueResponseDTO>> getVenues(@RequestParam(required = false) String locality,
+			@RequestParam(required = false) String sportName, @RequestParam(defaultValue = "false") boolean available) {
+		return ResponseEntity.ok(venueService.getVenues(locality, sportName, available));
+	}
+
+	@GetMapping("/search/{locality}")
+	public ResponseEntity<List<VenueResponseDTO>> getVenuesFromLocality(
+			@PathVariable(required = false) String locality) {
+		return ResponseEntity.ok(venueService.getVenuesFromLocality(locality));
+
+	}
+
+	@PostMapping("/{ownerId}/courts/{venueId}/{sportId}")
+	public ResponseEntity<ApiResponse> addCourt(@PathVariable Long ownerId,
+			@RequestBody @Valid CourtRequestDTO courtDTO) {
+		ApiResponse response = venueService.addCourt(ownerId, courtDTO);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+	}
+
+	@PutMapping("/courts/{courtId}/{ownerId}")
+	public ResponseEntity<ApiResponse> updateCourt(@PathVariable Long courtId, @PathVariable Long ownerId,
+			@RequestBody @Valid CourtRequestDTO courtDTO) {
+		ApiResponse response = venueService.updateCourt(ownerId, courtId, courtDTO);
+		return ResponseEntity.ok(response);
+	}
+
+	@GetMapping("/{venueId}/courts")
+	public ResponseEntity<List<CourtResponseDTO>> getCourtsByVenue(@PathVariable Long venueId) {
+		List<CourtResponseDTO> response = venueService.getCourtsByVenue(venueId);
+		return ResponseEntity.ok(response);
+	}
+
+	@DeleteMapping("/courts/{courtId}")
+	public ResponseEntity<ApiResponse> deleteCourt(@PathVariable Long courtId) {
+		ApiResponse response = venueService.deleteCourt(courtId);
+		return ResponseEntity.ok(response);
+	}
+
+	@PostMapping("/sports")
+	public ResponseEntity<ApiResponse> createSport(@RequestBody @Valid SportRequestDTO sportDTO) {
+		return ResponseEntity.ok(venueService.createSport(sportDTO));
+	}
+
+	@PutMapping("/sports/{sportId}")
+	public ResponseEntity<ApiResponse> updateSport(@PathVariable Long sportId,
+			@RequestBody @Valid SportRequestDTO sportDTO) {
+		return ResponseEntity.ok(venueService.updateSport(sportId, sportDTO));
+	}
+
+	@DeleteMapping("/sports/{sportId}")
+	public ResponseEntity<ApiResponse> deleteSport(@PathVariable Long sportId) {
+		return ResponseEntity.ok(venueService.deleteSport(sportId));
+	}
+
+	@GetMapping("/sports")
+	public ResponseEntity<List<SportResponseDTO>> getAllSports() {
+		List<SportResponseDTO> response = venueService.getAllSports();
+		return ResponseEntity.ok(response);
 	}
 
 }
