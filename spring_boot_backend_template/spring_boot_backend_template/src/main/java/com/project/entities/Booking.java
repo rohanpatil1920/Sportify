@@ -1,4 +1,4 @@
-package com.project.pojos;
+package com.project.entities;
 
 import java.math.BigDecimal;
 import java.time.Duration;

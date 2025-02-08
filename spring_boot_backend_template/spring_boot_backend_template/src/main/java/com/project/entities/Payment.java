@@ -1,4 +1,4 @@
-package com.project.pojos;
+package com.project.entities;
 
 import java.beans.Transient;
 import java.math.BigDecimal;

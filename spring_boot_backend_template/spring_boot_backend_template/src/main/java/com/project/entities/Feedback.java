@@ -1,4 +1,4 @@
-package com.project.pojos;
+package com.project.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
