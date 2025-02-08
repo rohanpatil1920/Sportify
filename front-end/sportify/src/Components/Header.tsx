@@ -43,14 +43,8 @@ const Header = () => {
           >
             Contact
           </Link>
-          <Link
-            to="/Login"
-            className="text-gray-700 dark:text-gray-300 hover:text-blue-500 transition"
-          >
-            Login
-          </Link>
         </div>
-      
+
         {/* Theme Toggle Button */}
         <button
           onClick={toggleTheme}

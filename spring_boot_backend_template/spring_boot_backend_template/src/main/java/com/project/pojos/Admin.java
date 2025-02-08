@@ -1,4 +1,4 @@
-package com.project.entities;
+package com.project.pojos;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

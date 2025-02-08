@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   content: [
     "./index.html",
     "./src/**/*.{js,jsx,ts,tsx}", // Adjust path based on where your components and pages are
