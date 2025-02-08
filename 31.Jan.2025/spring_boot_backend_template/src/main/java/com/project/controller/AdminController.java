@@ -8,11 +8,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.custom_exception.AdminNotFoundException;
 import com.project.dto.AdminDto;
+import com.project.dto.ApiResponse;
+import com.project.dto.DeletionRequestDTO;
 import com.project.dto.UserDTO;
 import com.project.service.AdminService;
 
@@ -22,9 +26,8 @@ import com.project.service.AdminService;
 public class AdminController {
 
 	@Autowired
-	private final AdminService adminService;
+	private AdminService adminService;
 
-	
 	public AdminController(AdminService adminService) {
 		this.adminService = adminService;
 	}
@@ -50,5 +53,16 @@ public class AdminController {
 		List<UserDTO> facilityOwners = adminService.getAllFacilityOwners(); // Call the service method to get
 																			// all facility owners
 		return new ResponseEntity<>(facilityOwners, HttpStatus.OK);
+	}
+
+	@GetMapping("/deletion-requests")
+	public ResponseEntity<List<DeletionRequestDTO>> getPendingDeletionRequests() {
+		return ResponseEntity.ok(adminService.getPendingDeletionRequests());
+	}
+
+	@PostMapping("/{adminId}/process-deletion/{requestId}")
+	public ResponseEntity<ApiResponse> processDeletionRequest(@PathVariable Long adminId, @PathVariable Long requestId,
+			@RequestParam boolean approve) {
+		return ResponseEntity.ok(adminService.processDeletionRequest(adminId, requestId, approve));
 	}
 }
