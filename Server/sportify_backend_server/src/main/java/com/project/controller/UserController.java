@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.dto.ApiResponse;
@@ -16,6 +17,7 @@ import com.project.dto.UserLoginRequestDTO;
 import com.project.dto.UserRegistrationRequestDTO;
 import com.project.dto.UserResponseDTO;
 import com.project.dto.UserUpdationDTO;
+import com.project.pojos.UserRole;
 import com.project.service.AdminService;
 import com.project.service.PlayerService;
 import com.project.service.UserService;

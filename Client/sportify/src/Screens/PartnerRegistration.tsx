@@ -2,7 +2,8 @@ import React from "react";
 import { Link,useNavigate} from "react-router-dom";
 import { TEInput, TERipple } from "tw-elements-react";
 import { useState } from "react";
-import { register } from "../Services/registerService";
+import { register,registerPartner } from "../Services/registerService";
+
 
 
 export default function Register() {
@@ -12,10 +13,11 @@ export default function Register() {
   const [contact, setContact] = useState("");
   const [role, setRole] = useState(null);
   const navigate = useNavigate();
+
   
   const handleRegister = async () => {
       try {
-        const response = await register(username, email, password, contact); // API call
+        const response = await registerPartner(username, email, password, contact); // API call
         const { role } = response; // Extract role from response
         setRole(role); // Store role in state
   
@@ -45,17 +47,13 @@ export default function Register() {
                 >
                   <div className="px-2 py-6 mb-20 text-white md:mx-6 md:p-6">
                     <h3 className="mb-4 text-3xl font-bold">
-                      "Book, Play, Repeat !"
+                       List Your Turf and Join the Sports Revolution!
                     </h3>
                     <h6 className="mb-4 text-lg font-bold">
-                      Start your sports journey with seamless turf bookings.
+                    Your Turf, Your Rules, Our Platform    
                     </h6>
                     <p className="text-sm">
-                      Ready to play? Create your account in seconds and gain
-                      access to the best turfs in your city. From cricket to
-                      football and tennis, we make booking outdoor sports
-                      facilities quick, easy, and fun. Register now and let the
-                      games begin!
+                      Join us as a partner and unlock the potential of your turf. Manage bookings, connect with players, and earn more—all in one place. Register now and let the games begin!
                     </p>
                   </div>
                 </div>

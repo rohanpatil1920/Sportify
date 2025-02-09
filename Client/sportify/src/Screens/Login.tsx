@@ -1,8 +1,46 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { TEInput, TERipple } from "tw-elements-react";
+import { useNavigate } from "react-router-dom";
+import { login } from "../Services/loginService";
+import { useState } from "react";
+
+
 
 export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [userRole, setUserRole] = useState(null);
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    try {
+      const response = await login(email, password); // API call
+      const { role } = response; // Extract role from response
+      setUserRole(role); // Store role in state
+
+      const { id,username,isActive } = response;
+
+      sessionStorage.setItem("id", id);
+      sessionStorage.setItem("username", username);
+      sessionStorage.setItem("isActive", isActive);
+      sessionStorage.setItem("role", role);
+
+      // Redirect based on role
+      if (role === "admin") {
+        navigate("/admin-dashboard");
+      } else if (role === "player") {
+        navigate("/player-dashboard");
+      } else if (role === "manager") {
+        navigate("/manager-dashboard");
+      } else {
+        navigate("/"); // Default fallback
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
+
   return (
     <section className="h-full bg-neutral-200 light:bg-neutral-700">
       <div className="container h-full p-10">
@@ -26,9 +64,10 @@ export default function Login() {
                       {/* <!--Username input--> */}
                       <input
                         type="text"
-                        placeholder="Username"
+                        placeholder="Email"
                         className="w-72 mb-4 border-b-2 p-2 border-gray-300 rounded-md filter shadow-md outline-none "
                         style={{ backgroundColor: "white", color: "black"}}
+                        onChange={(e) => setEmail(e.target.value)}
                       ></input>
 
                       {/* <!--Password input--> */}
@@ -37,11 +76,12 @@ export default function Login() {
                         placeholder="Password"
                         className="w-72 mb-4 border-b-2 p-2 border-gray-300 rounded-md filter shadow-md outline-none"
                         style={{ backgroundColor: "white", color: "black" }}
+                        onChange={(e) => setPassword(e.target.value)}
                       ></input>
 
                       {/* <!--Submit button--> */}
                       <div className="mb-12 pb-1 pt-1 text-center">
-                          <Link to="/post-login"
+                          <Link to="/login"
                             className="mb-3 inline-block w-full rounded px-6 pb-2 pt-2.5 text-xs font-bold uppercase leading-normal text-white shadow-[0_4px_9px_-4px_rgba(0,0,0,0.2)] transition duration-150 ease-in-out hover:shadow-[0_8px_9px_-4px_rgba(0,0,0,0.1),0_4px_18px_0_rgba(0,0,0,0.2)] focus:shadow-[0_8px_9px_-4px_rgba(0,0,0,0.1),0_4px_18px_0_rgba(0,0,0,0.2)] focus:outline-none focus:ring-0 active:shadow-[0_8px_9px_-4px_rgba(0,0,0,0.1),0_4px_18px_0_rgba(0,0,0,0.2)]"
                             type="button"
                             style={{
@@ -49,6 +89,7 @@ export default function Login() {
                                 "linear-gradient(130deg, rgba(11,185,1,1) 0%, rgba(41,121,9,1) 45%, rgba(2,102,6,1) 100%)",
                                 color:"#ffffff",
                             }}
+                            onClick={handleLogin}
                           >
                             Log in
                           </Link>
