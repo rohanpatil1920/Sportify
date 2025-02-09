@@ -49,6 +49,13 @@ const Header = () => {
           >
             Login
           </Link>
+
+          <Link
+            to="/partner-registration"
+            className="text-gray-700 dark:text-gray-300 hover:text-blue-500 transition"
+          >
+            Become a Partner
+          </Link>
         </div>
       
         {/* Theme Toggle Button */}
