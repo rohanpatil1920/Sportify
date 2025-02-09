@@ -1,8 +1,33 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate} from "react-router-dom";
 import { TEInput, TERipple } from "tw-elements-react";
+import { useState } from "react";
+import { register } from "../Services/registerService";
+
 
 export default function Register() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [contact, setContact] = useState("");
+  const [role, setRole] = useState(null);
+  const navigate = useNavigate();
+  
+  const handleRegister = async () => {
+      try {
+        const response = await register(username, email, password, contact); // API call
+        const { role } = response; // Extract role from response
+        setRole(role); // Store role in state
+  
+        alert(response.message)
+        
+        navigate("/login");
+      
+      } catch (error) {
+        console.error("Login failed:", error);
+      }
+    };
+
   return (
     <section className="h-full bg-neutral-200 light:bg-neutral-700">
       <div className="container h-full p-10">
@@ -54,6 +79,7 @@ export default function Register() {
                           placeholder="Name"
                           className="w-72 mb-4 border-b-2 p-2 border-gray-300 rounded-md filter shadow-md outline-none"
                           style={{ backgroundColor: "white", color: "black" }}
+                          onChange={(e) => setUsername(e.target.value)}
                         />
                         {/* <!--Email input--> */}
                         <input
@@ -61,6 +87,7 @@ export default function Register() {
                           placeholder="Email"
                           className="w-72 mb-4 border-b-2 p-2 border-gray-300 rounded-md filter shadow-md outline-none"
                           style={{ backgroundColor: "white", color: "black" }}
+                          onChange={(e) => setEmail(e.target.value)}
                         />
 
                         {/* <!--Password input--> */}
@@ -69,6 +96,7 @@ export default function Register() {
                           placeholder="Password"
                           className="w-72 mb-4 border-b-2 p-2 border-gray-300 rounded-md filter shadow-md outline-none"
                           style={{ backgroundColor: "white", color: "black" }}
+                          onChange={(e) => setPassword(e.target.value)}
                         />
                         {/* <!--Contact No. input--> */}
                         <input
@@ -78,6 +106,7 @@ export default function Register() {
                           style={{ backgroundColor: "white", color: "black" }}
                           // Hide increment and decrement buttons
                           onWheel={(e) => e.currentTarget.blur()}
+                          onChange={(e) => setContact(e.target.value)}
                         />
                         <style>
                           {`
@@ -96,7 +125,7 @@ export default function Register() {
                         {/* <!--Submit button--> */}
                         <div className="mb-12 pb-1 pt-1 text-center w-40">
                           <Link
-                            to="/post-register"
+                            to="/login"
                             className="mb-3 inline-block w-full rounded px-6 pb-2 pt-2.5 text-xs font-bold uppercase leading-normal text-white shadow-[0_4px_9px_-4px_rgba(0,0,0,0.2)] transition duration-150 ease-in-out hover:shadow-[0_8px_9px_-4px_rgba(0,0,0,0.1),0_4px_18px_0_rgba(0,0,0,0.2)] focus:shadow-[0_8px_9px_-4px_rgba(0,0,0,0.1),0_4px_18px_0_rgba(0,0,0,0.2)] focus:outline-none focus:ring-0 active:shadow-[0_8px_9px_-4px_rgba(0,0,0,0.1),0_4px_18px_0_rgba(0,0,0,0.2)]"
                             type="button"
                             style={{
@@ -104,6 +133,7 @@ export default function Register() {
                                 "linear-gradient(130deg, rgba(11,185,1,1) 0%, rgba(41,121,9,1) 45%, rgba(2,102,6,1) 100%)",
                               color: "#ffffff",
                             }}
+                            onClick={handleRegister}
                           >
                             Sign Up
                           </Link>
