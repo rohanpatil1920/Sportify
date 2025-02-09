@@ -17,6 +17,7 @@ import com.project.dto.UserLoginRequestDTO;
 import com.project.dto.UserRegistrationRequestDTO;
 import com.project.dto.UserResponseDTO;
 import com.project.dto.UserUpdationDTO;
+import com.project.pojos.UserRole;
 import com.project.service.AdminService;
 import com.project.service.PlayerService;
 import com.project.service.UserService;
