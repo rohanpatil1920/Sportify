@@ -2,6 +2,7 @@ package com.project.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -91,10 +92,35 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	public List<BookingResponseDTO> getPlayerBookings(Long playerId) {
-		Player player = playerRepository.findById(playerId).orElseThrow(() -> new ApiException("Player not found"));
+	    Player player = playerRepository.findById(playerId).orElseThrow(() -> new ApiException("Player not found"));
 
-		return bookingRepository.findByPlayer(player).stream()
-				.map(booking -> modelMapper.map(booking, BookingResponseDTO.class)).collect(Collectors.toList());
+	    return bookingRepository.findByPlayer(player).stream()
+	            .map(booking -> {
+	                // Manually map the additional fields
+	                BookingResponseDTO bookingResponseDTO = modelMapper.map(booking, BookingResponseDTO.class);
+	                bookingResponseDTO.setVenueName(booking.getCourt().getVenue().getName());
+	                bookingResponseDTO.setDate(booking.getStartTime().toLocalDate().toString());
+	                bookingResponseDTO.setTime(formatTimeRange(booking.getStartTime(), booking.getEndTime()));
+	                return bookingResponseDTO;
+	            })
+	            .collect(Collectors.toList());
+	}
+	
+	@Override
+	public ApiResponse getBookingById(Long playerId, Long bookingId) {
+	    // Fetch the player to ensure the player exists
+	    Player player = playerRepository.findById(playerId)
+	            .orElseThrow(() -> new ApiException("Player not found"));
+
+	    // Fetch the booking for the player
+	    Booking booking = bookingRepository.findByIdAndPlayer(bookingId, player)
+	            .orElseThrow(() -> new ApiException("Booking not found"));
+
+	    // Map to the BookingResponseDTO
+	    BookingResponseDTO bookingResponseDTO = new BookingResponseDTO(booking); // Using constructor to populate DTO
+
+	    // Return the response
+	    return new ApiResponse("Booking fetched successfully"+ bookingResponseDTO);
 	}
 
 	@Override
@@ -135,6 +161,11 @@ public class BookingServiceImpl implements BookingService {
 
 		bookingRepository.delete(booking);
 		return new ApiResponse("Booking deleted successfully.");
+	}
+	
+	private String formatTimeRange(LocalDateTime start, LocalDateTime end) {
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+	    return start.format(formatter) + " - " + end.format(formatter);
 	}
 
 }

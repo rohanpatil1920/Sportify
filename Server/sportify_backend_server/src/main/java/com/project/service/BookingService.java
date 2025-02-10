@@ -14,4 +14,6 @@ public interface BookingService {
 	ApiResponse updateBooking(Long playerId, Long bookingId, BookingRequestDTO bookingRequestDTO);
 
 	ApiResponse deleteBooking(Long playerId, Long bookingId);
+
+	ApiResponse getBookingById(Long playerId, Long bookingId);
 }

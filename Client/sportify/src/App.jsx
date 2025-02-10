@@ -10,6 +10,9 @@ import VenueBookingPage from "./Screens/VenueBookingPage";
 import RootLayout from "./Screens/RootLayout";
 import PartnerRegistration from "./Screens/PartnerRegistration";
 import AboutPage from "./Screens/About";
+import BookingHistory from "./Screens/BookingHistory";
+import ProfileUpdate from "./Screens/ProfileUpdate";
+import UpdateBookingPage from "./Screens/UpdateBooking";
 
 function App() {
   return (
@@ -28,6 +31,9 @@ function App() {
               path="/partner-registration"
               element={<PartnerRegistration />}
             />
+            <Route path="/edit-booking/:bookingId" element={<UpdateBookingPage />} />
+            <Route path="/profile-update" element={<ProfileUpdate />} />
+            <Route path="/history" element={<BookingHistory />} />
             <Route path="/about" element={<AboutPage />}></Route>
           </Route>
         </Routes>
