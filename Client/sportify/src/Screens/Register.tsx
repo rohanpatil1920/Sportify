@@ -1,9 +1,8 @@
 import React from "react";
-import { Link,useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { TEInput, TERipple } from "tw-elements-react";
 import { useState } from "react";
 import { register } from "../Services/registerService";
-
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -12,28 +11,27 @@ export default function Register() {
   const [contact, setContact] = useState("");
   const [role, setRole] = useState(null);
   const navigate = useNavigate();
-  
+
   const handleRegister = async () => {
-      try {
-        const response = await register(username, email, password, contact); // API call
-        const { role } = response; // Extract role from response
-        setRole(role); // Store role in state
-  
-        alert(response.message)
-        
-        navigate("/login");
-      
-      } catch (error) {
-        console.error("Login failed:", error);
-      }
-    };
+    try {
+      const response = await register(username, email, password, contact); // API call
+      const { role } = response; // Extract role from response
+      setRole(role); // Store role in state
+
+      alert(response.message);
+
+      navigate("/login");
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
+  };
 
   return (
-    <section className="h-full bg-neutral-200 light:bg-neutral-700">
+    <section className="h-full bg-white light:bg-neutral-700">
       <div className="container h-full p-10">
         <div className="g-6 flex h-full flex-wrap items-center justify-center text-neutral-800 dark:text-neutral-200">
           <div className="w-3/5">
-            <div className="block rounded-lg bg-white shadow-lg light:bg-neutral-800">
+            <div className="block rounded-lg bg-neutral-200 shadow-lg light:bg-neutral-800">
               <div className="g-0 lg:flex lg:flex-wrap">
                 {/* <!-- Left column container--> */}
                 <div
@@ -71,7 +69,7 @@ export default function Register() {
                         alt="logo"
                       />
                     </div>
-                    <div className="bg-white border-gray-800">
+                    <div className=" border-gray-800">
                       <form>
                         {/* <!--Username input--> */}
                         <input
@@ -144,15 +142,13 @@ export default function Register() {
                           <p className="mb-0 mr-2 text-black">
                             Already have an account?
                           </p>
-                          <TERipple rippleColor="light">
-                            <Link
-                              to="/login"
-                              type="button"
-                              className="inline-block outline-none rounded px-6 pb-2 pt-2.5 text-xs font-bold uppercase leading-normal text-green-900 transition duration-500 ease-in-out hover:bg-lime-700 hover:outline-none hover:text-primary focus:text-primary-600 focus:outline-none focus:ring-0 active:text-primary-700 dark:hover:bg-neutral-950 dark:hover:bg-opacity-100"
-                            >
-                              Login
-                            </Link>
-                          </TERipple>
+                          <Link
+                            to="/login"
+                            type="button"
+                            className="inline-block outline-none rounded px-6 pb-2 pt-2.5 text-xs font-bold uppercase leading-normal text-green-900 transition duration-500 ease-in-out hover:bg-lime-700 hover:outline-none hover:text-primary focus:text-primary-600 focus:outline-none focus:ring-0 active:text-primary-700 dark:hover:bg-neutral-950 dark:hover:bg-opacity-100"
+                          >
+                            Login
+                          </Link>
                         </div>
                       </form>
                     </div>

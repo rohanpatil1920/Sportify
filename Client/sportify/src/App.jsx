@@ -1,6 +1,5 @@
-//import React from "react";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { ThemeProvider } from "./Context/ThemeContext"; // Adjust the path as necessary
 import HomePage from "./Screens/Home";
 import Contact from "./Screens/Contact";
 import Login from "./Screens/Login";
@@ -10,10 +9,11 @@ import Activities from "./Screens/Activities";
 import VenueBookingPage from "./Screens/VenueBookingPage";
 import RootLayout from "./Screens/RootLayout";
 import PartnerRegistration from "./Screens/PartnerRegistration";
+import AboutPage from "./Screens/About";
 
 function App() {
   return (
-    <ThemeProvider>
+    <>
       <Router>
         <Routes>
           <Route path="/" element={<RootLayout />}>
@@ -24,11 +24,15 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/partner-registration" element={<PartnerRegistration/>} />
+            <Route
+              path="/partner-registration"
+              element={<PartnerRegistration />}
+            />
+            <Route path="/about" element={<AboutPage />}></Route>
           </Route>
         </Routes>
       </Router>
-    </ThemeProvider>
+    </>
   );
 }
 

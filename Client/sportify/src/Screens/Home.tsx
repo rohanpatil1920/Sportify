@@ -1,4 +1,4 @@
-import ReactJ from "react";
+import React from "react";
 import { CalendarIcon, ClockIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
