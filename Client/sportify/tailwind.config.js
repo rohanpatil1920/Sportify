@@ -13,6 +13,9 @@ export default {
         text: '#FFFFFF', // White
         button: '#4D4D4D', // Dark Gray
       },
+      fontFamily: {
+        racing: ["Racing Sans One", "sans-serif"], // Add "racing" as a custom font family
+      },
     },
     screens: {
       sm: "640px",
