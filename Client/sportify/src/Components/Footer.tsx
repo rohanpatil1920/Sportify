@@ -176,7 +176,7 @@ export default function App() {
       </div>
       {/* <!--Copyright section--> */}
       <div
-        className="p-6 text-center"
+        className="p-3 text-center"
         style={{
           background:
             "linear-gradient(130deg, rgba(11,185,1,1) 0%, rgba(41,121,9,1) 45%, rgba(2,102,6,1) 100%)",

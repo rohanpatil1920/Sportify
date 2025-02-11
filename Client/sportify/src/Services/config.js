@@ -1,3 +1,3 @@
 export const config = {
-    serverUrl: "http://localhost:8081",
+    serverUrl: "http://localhost:8080",
   };

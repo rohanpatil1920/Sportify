@@ -33,4 +33,6 @@ public class BookingRequestDTO {
 
 	@NotNull(message = "Venue ID is required")
 	private Long venueId;
+	
+	
 }

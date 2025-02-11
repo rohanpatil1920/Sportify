@@ -1,88 +1,71 @@
-// VenueBookingPage.tsx
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { useParams } from "react-router-dom";
-import VenueDetails from "../Components/VenueDetails";
 import BookingForm from "../Components/BookingForm";
 
-// Mock venue data (replace with API call)
-const venues = [
-  {
-    id: 1,
-    name: "Nawu Sports Club",
-    location: "Gahunje, Pune",
-    rating: 4.5,
-    sports: ["Box Cricket", "Football"],
-    images: ["img1.jpg", "img2.jpg"],
-    amenities: ["Parking", "Restrooms", "Refreshments", "Changing Space"],
-    timing: "6 AM - 12 AM",
-    pricePerHour: 2000,
-    slots: ["6:00 AM - 8:00 AM", "4:00 PM - 6:00 PM"],
-  },
-  {
-    id: 2,
-    name: "Sunbeam Sports Club",
-    location: "Phase 2, Pune",
-    rating: 4.5,
-    sports: ["Box Cricket"],
-    images: [
-      "https://via.placeholder.com/600x400?text=Image+1",
-      "https://via.placeholder.com/600x400?text=Image+2",
-      "https://via.placeholder.com/600x400?text=Image+3",
-    ],
-    amenities: ["Parking", "Restrooms", "Refreshments", "Changing Space"],
-    timing: "6 AM - 12 AM",
-    pricePerHour: 2000,
-    slots: ["6:00 AM - 8:00 AM", "4:00 PM - 6:00 PM"],
-  },
-  {
-    id: 3,
-    name: "Nawu Sports Club",
-    location: "Gahunje, Pune",
-    rating: 4.5,
-    sports: ["Box Cricket", "Football"],
-    images: ["img1.jpg", "img2.jpg"],
-    amenities: ["Parking", "Restrooms", "Refreshments", "Changing Space"],
-    timing: "6 AM - 12 AM",
-    pricePerHour: 2000,
-    slots: ["6:00 AM - 8:00 AM", "4:00 PM - 6:00 PM"],
-  },
-  {
-    id: 4,
-    name: "Sunbeam Sports Club",
-    location: "Phase 2, Pune",
-    rating: 4.5,
-    sports: ["Box Cricket"],
-    images: [
-      "https://via.placeholder.com/600x400?text=Image+1",
-      "https://via.placeholder.com/600x400?text=Image+2",
-      "https://via.placeholder.com/600x400?text=Image+3",
-    ],
-    amenities: ["Parking", "Restrooms", "Refreshments", "Changing Space"],
-    timing: "6 AM - 12 AM",
-    pricePerHour: 2000,
-    slots: ["6:00 AM - 8:00 AM", "4:00 PM - 6:00 PM"],
-  },
+type VenueBookingPageProps = {};
 
-  // Add more venues here
-];
+const VenueBookingPage: React.FC<VenueBookingPageProps> = () => {
+  const { venueId } = useParams<{ venueId: string }>();
+  const [pricePerHour, setPricePerHour] = useState<number>(0);
+  const [availableSlots, setAvailableSlots] = useState<string[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const playerId = JSON.parse(sessionStorage.getItem("user") || "{}").id;
 
-const VenueBookingPage = () => {
-  const { id } = useParams<{ id: string }>();
-  const venue = venues.find((v) => v.id === parseInt(id || ""));
+  useEffect(() => {
+    // Fetch venue details or any necessary data for booking
+    const fetchVenueDetails = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/venue/${venueId}/courts`
+        );
 
-  if (!venue) {
-    return <div>Venue not found</div>;
+        if (response.data && response.data.length > 0) {
+          // Set default price per hour based on the first court
+          setPricePerHour(response.data[0].pricePerHour);
+
+          // Generate available time slots
+          const generatedSlots = [
+            "08:00 AM - 09:00 AM",
+            "09:00 AM - 10:00 AM",
+            "10:00 AM - 11:00 AM",
+            "11:00 AM - 12:00 PM",
+            "12:00 PM - 01:00 PM",
+            "01:00 PM - 02:00 PM",
+            "02:00 PM - 03:00 PM",
+            "03:00 PM - 04:00 PM",
+          ];
+          setAvailableSlots(generatedSlots);
+        } else {
+          setError("No courts are available for this venue.");
+        }
+      } catch (ex) {
+        console.error("Error fetching venue details:", ex);
+        setError("Failed to load venue details. Please try again later.");
+      }
+    };
+
+    fetchVenueDetails();
+  }, [venueId]);
+
+  if (error) {
+    return (
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <h2 className="text-2xl font-bold text-red-500">{error}</h2>
+      </div>
+    );
   }
 
   return (
-    <div className="bg-white container mx-auto px-4 py-8">
-      <VenueDetails {...venue} />
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="md:col-span-2">{/* Add reviews section here */}</div>
-        <div className="md:col-span-1 ">
-          <BookingForm pricePerHour={venue.pricePerHour} slots={venue.slots} />
-        </div>
-      </div>
+    <div className="container mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-4">Venue Booking Page</h1>
+
+      <p className="text-gray-700 mb-6">
+        Welcome to the venue booking page. Select your preferred date, time
+        slots, and courts to proceed.
+      </p>
+
+      <BookingForm pricePerHour={pricePerHour} slots={availableSlots} />
     </div>
   );
 };

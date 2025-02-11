@@ -65,7 +65,7 @@ export default function ContactPage() {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 bg-white">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="border p-6 rounded-lg shadow-lg">
           <span className="inline-block bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
@@ -78,7 +78,7 @@ export default function ContactPage() {
           <form onSubmit={handleSubmit} className="space-y-4 mt-4">
             <label className="block font-medium">Name</label>
             <input
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded bg-white"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -86,7 +86,7 @@ export default function ContactPage() {
 
             <label className="block font-medium">Email</label>
             <input
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded bg-white"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -95,7 +95,7 @@ export default function ContactPage() {
 
             <label className="block font-medium">Subject</label>
             <input
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded bg-white"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               required
@@ -103,7 +103,7 @@ export default function ContactPage() {
 
             <label className="block font-medium">Message</label>
             <textarea
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded bg-white"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               required
