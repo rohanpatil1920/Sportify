@@ -1,6 +1,8 @@
 package com.project.dto;
 
-import com.project.pojos.UserRole;
+import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,14 +14,11 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 @ToString(callSuper = true)
-public class DeletionRequestDTO {
-	private Long requestId;
-	private Long userId;
+public class PlayerBookingResponse {
 	private String username;
-	private String reason;
-	private String email;
-	private UserRole role;
-//	private DeletionStatus status;
-//	private LocalDateTime createdOn;
+	private String contact;
+	private Long courtId;
+	private LocalDate bookingDate;
 }

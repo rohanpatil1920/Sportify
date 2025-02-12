@@ -16,6 +16,7 @@ import com.project.custom_exception.InvalidBookingException;
 import com.project.dto.ApiResponse;
 import com.project.dto.BookingRequestDTO;
 import com.project.dto.BookingResponseDTO;
+import com.project.dto.PlayerBookingResponse;
 import com.project.pojos.Booking;
 import com.project.pojos.Court;
 import com.project.pojos.Player;
@@ -92,35 +93,21 @@ public class BookingServiceImpl implements BookingService {
 
 	@Override
 	public List<BookingResponseDTO> getPlayerBookings(Long playerId) {
-	    Player player = playerRepository.findById(playerId).orElseThrow(() -> new ApiException("Player not found"));
+		Player player = playerRepository.findById(playerId).orElseThrow(() -> new ApiException("Player not found"));
 
-	    return bookingRepository.findByPlayer(player).stream()
-	            .map(booking -> {
-	                // Manually map the additional fields
-	                BookingResponseDTO bookingResponseDTO = modelMapper.map(booking, BookingResponseDTO.class);
-	                bookingResponseDTO.setVenueName(booking.getCourt().getVenue().getName());
-	                bookingResponseDTO.setDate(booking.getStartTime().toLocalDate().toString());
-	                bookingResponseDTO.setTime(formatTimeRange(booking.getStartTime(), booking.getEndTime()));
-	                return bookingResponseDTO;
-	            })
-	            .collect(Collectors.toList());
+		return bookingRepository.findByPlayer(player).stream().map(booking -> {
+			// Manually map the additional fields
+			BookingResponseDTO bookingResponseDTO = modelMapper.map(booking, BookingResponseDTO.class);
+			bookingResponseDTO.setVenueName(booking.getCourt().getVenue().getName());
+			bookingResponseDTO.setDate(booking.getStartTime().toLocalDate().toString());
+			bookingResponseDTO.setTime(formatTimeRange(booking.getStartTime(), booking.getEndTime()));
+			return bookingResponseDTO;
+		}).collect(Collectors.toList());
 	}
-	
-	@Override
-	public ApiResponse getBookingById(Long playerId, Long bookingId) {
-	    // Fetch the player to ensure the player exists
-	    Player player = playerRepository.findById(playerId)
-	            .orElseThrow(() -> new ApiException("Player not found"));
 
-	    // Fetch the booking for the player
-	    Booking booking = bookingRepository.findByIdAndPlayer(bookingId, player)
-	            .orElseThrow(() -> new ApiException("Booking not found"));
-
-	    // Map to the BookingResponseDTO
-	    BookingResponseDTO bookingResponseDTO = new BookingResponseDTO(booking); // Using constructor to populate DTO
-
-	    // Return the response
-	    return new ApiResponse("Booking fetched successfully"+ bookingResponseDTO);
+	private String formatTimeRange(LocalDateTime start, LocalDateTime end) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+		return start.format(formatter) + " - " + end.format(formatter);
 	}
 
 	@Override
@@ -162,10 +149,36 @@ public class BookingServiceImpl implements BookingService {
 		bookingRepository.delete(booking);
 		return new ApiResponse("Booking deleted successfully.");
 	}
-	
-	private String formatTimeRange(LocalDateTime start, LocalDateTime end) {
-	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-	    return start.format(formatter) + " - " + end.format(formatter);
+
+	@Override
+	public List<BookingResponseDTO> getBookingsByFacilityOwner(Long facilityOwnerId) {
+		// Fetch bookings for all venues owned by the facility owner
+		List<Booking> bookings = bookingRepository.findBookingsByFacilityOwnerId(facilityOwnerId);
+
+		// Convert the list of Booking entities into BookingResponseDTOs
+		return bookings.stream().map(booking -> {
+			BookingResponseDTO bookingResponseDTO = modelMapper.map(booking, BookingResponseDTO.class);
+
+			// Set additional details for the DTO
+			bookingResponseDTO.setVenueName(booking.getCourt().getVenue().getName());
+			bookingResponseDTO.setPlayerName(booking.getPlayer().getUsername());
+			bookingResponseDTO.setDate(booking.getStartTime().toLocalDate().toString());
+			bookingResponseDTO.setTime(formatTimeRange(booking.getStartTime(), booking.getEndTime()));
+			return bookingResponseDTO;
+		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public Long getTotalBookingsByFacilityOwner(Long facilityOwnerId) {
+		return bookingRepository.countBookingsByFacilityOwnerId(facilityOwnerId);
+	}
+
+	@Override
+	public List<PlayerBookingResponse> getPlayersByFacilityOwnerId(Long facilityOwnerId) {
+		return bookingRepository.findPlayersByFacilityOwnerId(facilityOwnerId).stream()
+				.map(booking -> new PlayerBookingResponse(booking.getPlayer().getUsername(),
+						booking.getPlayer().getContact(), booking.getCourt().getId(), booking.getBookingDate()))
+				.collect(Collectors.toList());
 	}
 
 }

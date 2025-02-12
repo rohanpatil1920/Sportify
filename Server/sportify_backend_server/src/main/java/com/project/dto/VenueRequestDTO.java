@@ -1,7 +1,6 @@
 package com.project.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.project.pojos.Address;
 import com.project.pojos.Locality;
 
 import jakarta.validation.Valid;
@@ -33,5 +32,5 @@ public class VenueRequestDTO extends SuperDTO {
 
 	@Valid
 	@NotNull(message = "Address is required")
-	private Address address;
+	private AddressDTO address;
 }

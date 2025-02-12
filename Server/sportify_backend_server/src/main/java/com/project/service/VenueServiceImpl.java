@@ -1,7 +1,9 @@
 package com.project.service;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.custom_exception.ApiException;
+import com.project.dto.AddressDTO;
 import com.project.dto.ApiResponse;
 import com.project.dto.CourtRequestDTO;
 import com.project.dto.CourtResponseDTO;
@@ -50,12 +53,25 @@ public class VenueServiceImpl implements VenueService {
 	@Autowired
 	private SportRepository sportRepository;
 
+	@Autowired
+	private BookingService bookingService;
+
 	@Override
 	public ApiResponse createVenue(Long ownerId, VenueRequestDTO venueDTO) {
 		FacilityOwner owner = facilityOwnerRepository.findById(ownerId)
 				.orElseThrow(() -> new ApiException("Facility Owner not found"));
 
-		Address address = venueDTO.getAddress();
+		AddressDTO addressDTO = venueDTO.getAddress();
+
+//		Address address = modelMapper.map(addressDTO, Address.class);
+
+		Address address = new Address();
+		address.setAdrLine1(addressDTO.getAdrLine1());
+		address.setAdrLine2(addressDTO.getAdrLine2());
+		address.setCity(addressDTO.getCity());
+		address.setCountry(addressDTO.getCountry());
+		address.setState(addressDTO.getState());
+		address.setZipCode(addressDTO.getZipCode());
 
 		if (address != null) {
 			addressRepository.save(address);
@@ -167,6 +183,7 @@ public class VenueServiceImpl implements VenueService {
 
 	@Override
 	public List<CourtResponseDTO> getCourtsByVenue(Long venueId) {
+		System.out.println("Fetching courts for venueId: " + venueId);
 		Venue venue = venueRepository.findById(venueId).orElseThrow(() -> new ApiException("Venue not found"));
 
 		return venue.getCourts().stream().map(court -> modelMapper.map(court, CourtResponseDTO.class))
@@ -213,5 +230,73 @@ public class VenueServiceImpl implements VenueService {
 		return sportRepository.findAll().stream().map(sport -> modelMapper.map(sport, SportResponseDTO.class))
 				.collect(Collectors.toList());
 	}
+
+	@Override
+	public List<VenueResponseDTO> getAllVenues() {
+		return venueRepository.findAll().stream().map(venue -> modelMapper.map(venue, VenueResponseDTO.class))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<VenueResponseDTO> getVenuesByOwner(Long ownerId) {
+		FacilityOwner owner = facilityOwnerRepository.findById(ownerId)
+				.orElseThrow(() -> new ApiException("Facility Owner not found"));
+
+		return venueRepository.findByFacilityOwner(owner).stream()
+				.map(venue -> modelMapper.map(venue, VenueResponseDTO.class)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<CourtResponseDTO> getCourtsByOwner(Long ownerId) {
+		FacilityOwner owner = facilityOwnerRepository.findById(ownerId)
+				.orElseThrow(() -> new ApiException("Facility Owner not found"));
+		return venueRepository.findByFacilityOwner(owner).stream().flatMap(venue -> venue.getCourts().stream())
+				.map(court -> modelMapper.map(court, CourtResponseDTO.class)).collect(Collectors.toList());
+	}
+
+	@Override
+	public Map<String, String> getVenueDetails(Long venueId) {
+		Venue venue = venueRepository.findById(venueId)
+				.orElseThrow(() -> new ApiException("Venue not found with id: " + venueId));
+
+		Map<String, String> venueDetails = new HashMap<>();
+		venueDetails.put("name", venue.getName());
+		venueDetails.put("description", venue.getDescription());
+
+		return venueDetails;
+	}
+
+	@Override
+	public CourtResponseDTO getCourtById(Long courtId) {
+		Court court = courtRepository.findById(courtId)
+				.orElseThrow(() -> new ApiException("Court not found with ID: " + courtId));
+
+		SportResponseDTO sport = new SportResponseDTO(court.getSport().getSportName(),
+				court.getSport().getEquipmentChoice());
+
+		VenueRequestDTO venue = new VenueRequestDTO(court.getVenue().getName(), court.getVenue().getDescription(),
+				court.getVenue().getLocality(),
+				new AddressDTO(court.getVenue().getVenueAddress().getAdrLine1(),
+						court.getVenue().getVenueAddress().getAdrLine2(), court.getVenue().getVenueAddress().getCity(),
+						court.getVenue().getVenueAddress().getState(), court.getVenue().getVenueAddress().getCountry(),
+						court.getVenue().getVenueAddress().getZipCode()));
+
+		return new CourtResponseDTO(court.getPricePerHour(), sport, venue);
+
+	}
+
+	@Override
+	public List<VenueResponseDTO> getVenuesBySport(String sportName) {
+		return venueRepository.findAll().stream()
+				.filter(venue -> venue.getCourts().stream()
+						.anyMatch(court -> court.getSport().getSportName().name().equalsIgnoreCase(sportName)))
+				.map(venue -> modelMapper.map(venue, VenueResponseDTO.class)).collect(Collectors.toList());
+	}
+
+//	@Override
+//	public Venue getVenueDetails(Long venueId) {
+//        return venueRepository.findById(venueId)
+//                .orElseThrow(() -> new ApiException("Venue not found with id: " + venueId));
+//    }
 
 }

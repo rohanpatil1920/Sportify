@@ -1,6 +1,7 @@
 package com.project.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.project.dto.ApiResponse;
 import com.project.dto.CourtRequestDTO;
@@ -37,4 +38,17 @@ public interface VenueService {
 
 	ApiResponse createSport(SportRequestDTO sportDTO);
 
+	List<VenueResponseDTO> getAllVenues();
+
+	List<VenueResponseDTO> getVenuesByOwner(Long ownerId);
+
+	List<CourtResponseDTO> getCourtsByOwner(Long ownerId);
+
+//	List<PlayerResponseDTO> getPlayersByOwner(Long ownerId)
+
+	Map<String, String> getVenueDetails(Long venueId);
+
+	CourtResponseDTO getCourtById(Long courtId);
+
+	List<VenueResponseDTO> getVenuesBySport(String sportName);
 }
