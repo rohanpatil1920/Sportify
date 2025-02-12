@@ -62,3 +62,30 @@
     opacity: 0;
   }
 }
+
+/* Add this CSS */
+@keyframes infiniteScroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-infinite-scroll {
+  display: flex;
+  animation: infiniteScroll 20s linear infinite;
+  /* Adjust duration as needed */
+}
+
+@keyframes infiniteScroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}

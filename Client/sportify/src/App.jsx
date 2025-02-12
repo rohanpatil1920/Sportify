@@ -13,6 +13,16 @@ import AboutPage from "./Screens/About";
 import BookingHistory from "./Screens/BookingHistory";
 import ProfileUpdate from "./Screens/ProfileUpdate";
 import UpdateBookingPage from "./Screens/UpdateBooking";
+import LandingPage from "./Screens/LandingPage";
+import { Sidebar } from "lucide-react";
+import MainContent from "./Screens/MainContent";
+import RegisterVenue from "./Screens/RegisterVenue";
+import AddCourts from "./Screens/AddCourts";
+import UpdateVenueForm from "./Screens/UpdateVenueForm";
+import UpdateCourtForm from "./Screens/UpdateCourtForm";
+import VenueListByLocality from "./Components/VenueListByLocality";
+import VenueListBySports from "./Components/VenueListBySports";
+import AdminDashboard from "./Screens/Admin";
 
 function App() {
   return (
@@ -20,9 +30,15 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<RootLayout />}>
-            <Route index element={<HomePage />} />
+            <Route index path="/" element={<LandingPage />} />
+            <Route index path="/player-dashboard" element={<HomePage />} />
             <Route path="/venues" element={<VenueList />} />
-            <Route path="/venue/:id" element={<VenueBookingPage />} />
+            <Route
+              path="/venuelistbylocality"
+              element={<VenueListByLocality />}
+            />
+            <Route path="/venuelistbysports" element={<VenueListBySports />} />
+            <Route path="/venue/:venueId" element={<VenueBookingPage />} />
             <Route path="/activities" element={<Activities />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={<Login />} />
@@ -31,10 +47,26 @@ function App() {
               path="/partner-registration"
               element={<PartnerRegistration />}
             />
-            <Route path="/edit-booking/:bookingId" element={<UpdateBookingPage />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard />}></Route>
+            <Route
+              path="/edit-booking/:bookingId"
+              element={<UpdateBookingPage />}
+            />
             <Route path="/profile-update" element={<ProfileUpdate />} />
             <Route path="/history" element={<BookingHistory />} />
             <Route path="/about" element={<AboutPage />}></Route>
+            <Route path="/sidebar" element={<Sidebar />} />
+            <Route path="/maincontent" element={<MainContent />} />
+            <Route path="/registervenue" element={<RegisterVenue />} />{" "}
+            <Route path="/AddCourts" element={<AddCourts />} />{" "}
+            <Route
+              path="/update-venue/:venueId"
+              element={<UpdateVenueForm />}
+            />
+            <Route
+              path="/update-court/:courtId"
+              element={<UpdateCourtForm />}
+            />
           </Route>
         </Routes>
       </Router>

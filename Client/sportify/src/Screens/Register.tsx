@@ -142,13 +142,15 @@ export default function Register() {
                           <p className="mb-0 mr-2 text-black">
                             Already have an account?
                           </p>
+                          <TERipple rippleColor="light">
                           <Link
                             to="/login"
                             type="button"
                             className="inline-block outline-none rounded px-6 pb-2 pt-2.5 text-xs font-bold uppercase leading-normal text-green-900 transition duration-500 ease-in-out hover:bg-lime-700 hover:outline-none hover:text-primary focus:text-primary-600 focus:outline-none focus:ring-0 active:text-primary-700 dark:hover:bg-neutral-950 dark:hover:bg-opacity-100"
                           >
                             Login
-                          </Link>
+                            </Link>
+                            </TERipple>
                         </div>
                       </form>
                     </div>
