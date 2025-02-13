@@ -25,12 +25,12 @@ export default function Login() {
       sessionStorage.setItem("role", role);
 
       // Redirect based on role
-      if (role === "admin") {
+      if (role === "ADMIN") {
         navigate("/admin-dashboard");
-      } else if (role === "player") {
+      } else if (role === "PLAYER") {
         navigate("/player-dashboard");
-      } else if (role === "manager") {
-        navigate("/manager-dashboard");
+      } else if (role === "FACILITYOWNER") {
+        navigate("/MainContent");
       } else {
         navigate("/"); // Default fallback
       }
@@ -153,3 +153,5 @@ export default function Login() {
     </section>
   );
 }
+
+

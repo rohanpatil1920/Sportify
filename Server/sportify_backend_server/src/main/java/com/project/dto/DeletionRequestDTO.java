@@ -1,8 +1,6 @@
 package com.project.dto;
 
-import java.time.LocalDateTime;
-
-import com.project.pojos.DeletionStatus;
+import com.project.pojos.UserRole;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +18,8 @@ public class DeletionRequestDTO {
 	private Long userId;
 	private String username;
 	private String reason;
-	private DeletionStatus status;
-	private LocalDateTime createdOn;
+	private String email;
+	private UserRole role;
+//	private DeletionStatus status;
+//	private LocalDateTime createdOn;
 }

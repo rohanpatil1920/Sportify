@@ -3,6 +3,7 @@ package com.project.dto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import jakarta.validation.constraints.NotNull;
@@ -26,13 +27,13 @@ public class BookingRequestDTO {
 	private Long court;
 
 	@NotNull(message = "Start time is required")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	private LocalDateTime startTime;
 
 	@NotNull(message = "End time is required")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
 	private LocalDateTime endTime;
 
 	@NotNull(message = "Venue ID is required")
 	private Long venueId;
-	
-	
 }

@@ -83,32 +83,21 @@ export default function App() {
             </p>
           </div>
           {/* <!-- Useful links section --> */}
-          <div className="mt-6">
-            <h6 className="mb-4 flex font-bold uppercase md:justify-start">
-              Popular Sports
-            </h6>
-            <p className="mb-4">
-              <a className="text-white hover:text-white hover:underline dark:text-neutral-200 focus:text-white">
-                Football
-              </a>
-            </p>
-            <p className="mb-4">
-              <a className="text-white hover:text-white hover:underline dark:text-neutral-200 focus:text-white">
-                Cricket
-              </a>
-            </p>
-            <p className="mb-4">
-              <a className="text-white hover:text-white hover:underline dark:text-neutral-200 focus:text-white">
-                Basketball
-              </a>
-            </p>
-            <p>
-              <a className="text-white hover:underline hover:text-white dark:text-neutral-200 focus:text-white">
-                Tennis
-              </a>
-            </p>
-          </div>
-          {/* <!-- Contact section --> */}
+<div className="mt-6">
+  <h6 className="mb-4 flex font-bold uppercase md:justify-start">
+    Popular Sports
+  </h6>
+  {["Football", "Cricket", "Basketball", "Tennis"].map((sport) => (
+    <p key={sport} className="mb-4">
+      <Link
+        to={`/venues?sport=${sport.toUpperCase()}`}
+        className="text-white hover:text-white hover:underline dark:text-neutral-200 focus:text-white"
+      >
+        {sport}
+      </Link>
+    </p>
+  ))}
+</div>
           <div className="mt-6">
             <h2 className="text-left mb-4 font-semibold text-lg">
               Subscribe to our Newsletter

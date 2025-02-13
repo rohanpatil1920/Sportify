@@ -68,11 +68,10 @@ public class AdminServiceImpl implements AdminService {
 	@Override
 	public List<DeletionRequestDTO> getPendingDeletionRequests() {
 		List<DeletionRequest> requests = deletionRequestRepository.findByStatus(DeletionStatus.PENDING);
-
 		return requests.stream()
 				.map(request -> new DeletionRequestDTO(request.getId(), request.getUser().getId(),
-						request.getUser().getUsername(), request.getReason(), request.getStatus(),
-						request.getCreatedOn()))
+						request.getUser().getUsername(), request.getReason(), request.getUser().getEmail(),
+						request.getUser().getRole()))
 				.collect(Collectors.toList());
 	}
 

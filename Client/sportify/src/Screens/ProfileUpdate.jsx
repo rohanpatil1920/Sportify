@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -11,34 +12,31 @@ const ProfileUpdate = () => {
 
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const userId = sessionStorage.getItem("id"); // Replace with the actual logged-in userId (you can retrieve this from context or localStorage)
+  const userId = sessionStorage.getItem("id");
+  const role = sessionStorage.getItem("role");
 
-  // Fetch user profile on component mount
   useEffect(() => {
     const fetchUserProfile = async () => {
-        try {
-          // Fetch user profile with the correct URL
-          const response = await fetch(`http://localhost:8080/users/${userId}/profile`);
-          
-          // Check if the response status is OK (status code 200)
-          if (!response.ok) {
-            throw new Error(`Error: ${response.status} - ${response.statusText}`);
-          }
-      
-          // Parse the response as JSON
-          const data = await response.json();
-          setUserData(data); // Set the profile data to the state
-          setLoading(false); // Stop the loading spinner
-        } catch (error) {
-          console.error("Error fetching profile:", error);
-          setLoading(false); // Stop loading in case of error
-        }
-      };
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/users/${userId}/profile`
+        );
+        setUserData({
+          username: response.data.username || "",
+          email: response.data.email || "",
+          contact: response.data.contact || "",
+          password: "",
+        });
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching profile:", error.response || error);
+        setLoading(false);
+      }
+    };
 
     fetchUserProfile();
   }, [userId]);
 
-  // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUserData((prevData) => ({
@@ -47,28 +45,31 @@ const ProfileUpdate = () => {
     }));
   };
 
-  // Handle form submission for updating the profile
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`/users/${userId}/update`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
+      const response = await axios.put(
+        `http://localhost:8080/users/${userId}/update`,
+        userData
+      );
 
-      if (response.ok) {
+      if (response.status === 200) {
         alert("Profile updated successfully!");
-        navigate("/home"); // Redirect to the home page after successful update
-      } else {
-        const result = await response.json();
-        alert(result.message || "Error updating profile.");
+        if (role === "ADMIN") {
+          navigate("/admin-dashboard");
+        } else if (role === "PLAYER") {
+          navigate("/player-dashboard");
+        } else if (role === "FACILITYOWNER") {
+          navigate("/MainContent");
+        } else {
+          navigate("/");
+        }
       }
     } catch (error) {
-      console.error("Error updating profile:", error);
-      alert("Error updating profile. Please try again.");
+      console.error("Error updating profile:", error.response || error);
+      const errorMessage =
+        error.response?.data?.message || "Error updating profile.";
+      alert(errorMessage);
     }
   };
 

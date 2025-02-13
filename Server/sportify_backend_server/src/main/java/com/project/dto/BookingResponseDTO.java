@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.project.pojos.Booking;
-import com.project.pojos.PaymentStatus;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,44 +13,44 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
-@ToString(callSuper = true)
+@JsonInclude(JsonInclude.Include.NON_EMPTY) // Exclude null/empty fields in JSON responses
+@ToString
 public class BookingResponseDTO {
-	private Long id;
-	private LocalDateTime createdOn;
-	private LocalDateTime updatedOn;
-	private Long playerId;
-	private Long courtId;
-	private BigDecimal totalPrice;
-	private PaymentStatus paymentStatus;
-	private Long venueId;
-	private String venueName;  
-	private String date;     
-	private String time;    
 
-	// Constructor to convert Booking entity to DTO
+	private Long id; // Booking ID
+	private LocalDateTime createdOn; // Timestamp when the booking was created
+	private LocalDateTime updatedOn; // Timestamp when the booking was last updated
+	private Long playerId; // ID of the player who made the booking
+	private String playerName; // Player's name
+	private Long courtId; // Court ID
+	private Long venueId; // Venue ID
+	private String venueName; // Venue name
+	private String date; // Booking date in string format
+	private String time; // Formatted time range (start - end)
+	private BigDecimal totalPrice; // Total price of the booking
+
+	// Constructor to map Booking entity to DTO
 	public BookingResponseDTO(Booking booking) {
-        this.id = booking.getId();
-        this.createdOn = booking.getCreatedOn();
-        this.updatedOn = booking.getUpdatedOn();
-        this.playerId = booking.getPlayer().getId();
-        this.courtId = booking.getCourt().getId();
-        this.totalPrice = booking.getTotalPrice();
-        //this.paymentStatus = booking.getPaymentStatus();
-        this.venueId = booking.getCourt().getVenue().getId();
-        this.venueName = booking.getCourt().getVenue().getName(); 
-        this.date = booking.getStartTime().toLocalDate().toString(); 
-        this.time = formatTimeRange(booking.getStartTime(), booking.getEndTime()); 
-    }
+		this.id = booking.getId();
+		this.createdOn = booking.getCreatedOn();
+		this.updatedOn = booking.getUpdatedOn();
+		this.playerId = booking.getPlayer().getId();
+		this.playerName = booking.getPlayer().getUsername(); // Assuming Player entity has a 'username' field
+		this.courtId = booking.getCourt().getId();
+		this.venueId = booking.getCourt().getVenue().getId(); // Assuming Court has a Venue association
+		this.venueName = booking.getCourt().getVenue().getName(); // Assuming Venue has a 'name' field
+		this.date = booking.getBookingDate().toString();
+		this.time = formatTimeRange(booking.getStartTime(), booking.getEndTime());
+		this.totalPrice = booking.getTotalPrice();
+	}
 
-    // The method to format the time range
-    private String formatTimeRange(LocalDateTime start, LocalDateTime end) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm"); 
-        return start.format(formatter) + " - " + end.format(formatter); 
-    }
+	// Helper method to format time range (e.g., 10:00 - 12:00)
+	private String formatTimeRange(LocalDateTime start, LocalDateTime end) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+		return start.format(formatter) + " - " + end.format(formatter);
+	}
 }

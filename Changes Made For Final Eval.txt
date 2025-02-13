@@ -1,0 +1,75 @@
+Changes Made in app.jsx
+	1. Added         <ThemeProvider>
+          <Router>
+
+	2. import { Provider } from "react-redux";
+	import store from "./store.jsx"; // Path to your Redux store
+	import { ThemeProvider } from "./Context/ThemeContext";
+
+	3. <Route path="/venue/:venueId" element={<VenueBookingPage />} /> in app.jsx
+
+E. Added a service API in VenueService Implementation : getVenuesByOwner
+For this changed the VenueService Interface and Also made changes in the VenueController
+
+F. Added getAllVenues in VenueServiceImplementation
+
+G. Made changes in Venue controller, service, serviceimpl as given below
+
+Controller: 
+@GetMapping("/owner/{ownerId}/courts")
+public ResponseEntity<List<CourtResponseDTO>> getCourtsByOwner(@PathVariable Long ownerId) {
+    List<CourtResponseDTO> response = venueService.getCourtsByOwner(ownerId);
+    return ResponseEntity.ok(response);
+}
+
+
+VenueService:
+	List<CourtResponseDTO> getCourtsByOwner(Long ownerId);
+
+VenueServiceImple:
+	@Override
+	public List<CourtResponseDTO> getCourtsByOwner(Long ownerId) {
+		FacilityOwner owner = facilityOwnerRepository.findById(ownerId)
+				.orElseThrow(() -> new ApiException("Facility Owner not found"));
+		return venueRepository.findByFacilityOwner(owner).stream().flatMap(venue -> venue.getCourts().stream())
+				.map(court -> modelMapper.map(court, CourtResponseDTO.class)).collect(Collectors.toList());
+	}
+
+H. Changed the Postmapping routing of addCourt in venueController
+	@PostMapping("/{ownerId}/courts")
+
+I. In booking form changes made in slots in which only the slots ahead of the current time will be shown and also the total slots shown are from 6 am to 11 pm 
+
+J. Player Update profile Completed now player can update profile
+
+K. Get venue Details api done to fetch the api while updating for facility owner
+
+VenueController:
+	@GetMapping("/{venueId}")
+	public ResponseEntity<Map<String, String>> getVenueDetails(@PathVariable Long venueId) {
+		Map<String, String> venue = venueService.getVenueDetails(venueId);
+		return ResponseEntity.ok(venue);
+	}
+
+VenueService:
+	Map<String, String> getVenueDetails(Long venueId);
+
+VenueServiceImple:
+		@Override
+	public Map<String, String> getVenueDetails(Long venueId) {
+		Venue venue = venueRepository.findById(venueId)
+				.orElseThrow(() -> new ApiException("Venue not found with id: " + venueId));
+
+		Map<String, String> venueDetails = new HashMap<>();
+		venueDetails.put("name", venue.getName());
+		venueDetails.put("description", venue.getDescription());
+
+		return venueDetails;
+	}
+
+L. 
+
+
+
+
+
