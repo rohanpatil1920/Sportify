@@ -1,7 +1,8 @@
 import React from "react";
-
 import { useState } from "react";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import { toast } from "react-toastify";
+import API from "../Services/api";
 
 export default function ContactPage() {
   const [name, setName] = useState("");

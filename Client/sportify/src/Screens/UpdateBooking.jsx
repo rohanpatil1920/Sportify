@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getBookingById, updateBooking } from "../Services/bookingServices";
+import {
+  getBookingById,
+  updateBooking,
+  getPlayerBookings,
+} from "../Services/bookingServices";
+import API from "../Services/api";
+import { toast } from "react-toastify";
 
 const UpdateBookingPage = () => {
   const { bookingId } = useParams();
@@ -17,15 +23,17 @@ const UpdateBookingPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const playerId = sessionStorage.getItem("id");
+
   useEffect(() => {
     const fetchBooking = async () => {
       try {
-        const data = await getPlayerBookings(1); // Assuming player ID = 1
+        const data = await getPlayerBookings(playerId);
         const booking = data.find((b) => b.id === parseInt(bookingId));
         console.log(booking);
         if (booking) {
           setBookingData({
-            venueId: booking.venueId, // ✅ Correctly set Venue ID
+            venueId: booking.venueId,
             courtId: booking.courtId,
             bookingDate: booking.date,
             startTime: extractTime(booking.time.split(" - ")[0]),
@@ -33,7 +41,8 @@ const UpdateBookingPage = () => {
           });
         }
       } catch (err) {
-        console.log(booking);
+        toast.error("Error fetching booking details");
+        // console.log(booking);
         setError("Error fetching booking details.");
       } finally {
         setIsLoading(false);
@@ -61,25 +70,28 @@ const UpdateBookingPage = () => {
       !bookingData.courtId ||
       !bookingData.bookingDate
     ) {
+      toast.warning("Venue ID, Court ID, and Booking Date are required.");
       alert("Venue ID, Court ID, and Booking Date are required.");
       setIsLoading(false);
       return;
     }
 
     const updatedBooking = {
-      venueId: bookingData.venueId, // ✅ Ensure Venue ID is included
+      venueId: bookingData.venueId,
       courtId: bookingData.courtId,
       bookingDate: bookingData.bookingDate,
       startTime: `${bookingData.bookingDate}T${bookingData.startTime}`,
       endTime: `${bookingData.bookingDate}T${bookingData.endTime}`,
     };
 
-    const response = await updateBooking(1, bookingId, updatedBooking);
+    const response = await updateBooking(playerId, bookingId, updatedBooking);
 
     if (response) {
+      toast.success("Booking updated successfully!");
       alert("Booking updated successfully!");
       navigate("/home");
     } else {
+      toast.error("Error updating booking.");
       alert("Error updating booking.");
     }
 

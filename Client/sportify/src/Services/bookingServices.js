@@ -1,66 +1,52 @@
 import axios from "axios";
+import { toast } from "react-toastify";
+import API from "./api";
 
-const API_BASE_URL = "http://localhost:8080/booking";
-
-// Fetch bookings for a player
 export const getPlayerBookings = async (playerId) => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/${playerId}/view`);
+    const response = await API.get(`players/bookings/${playerId}/view`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching bookings:", error);
+    toast.error("Error fetching bookings");
+    // console.error("Error fetching bookings:", error);
     return [];
   }
 };
 
-// Fetch booking by ID (for editing)
-// export const getBookingById = async (playerId, bookingId) => {
-//   try {
-//     const response = await axios.get(
-//       `${API_BASE_URL}/${playerId}/view/${bookingId}`
-//     );
-//     return response.data;
-//   } catch (error) {
-//     console.error("Error fetching booking details:", error);
-//     return null;
-//   }
-// };
-
-// Update booking details
 export const updateBooking = async (playerId, bookingId, bookingData) => {
   try {
-    const response = await axios.put(
-      `${API_BASE_URL}/${playerId}/update/${bookingId}`,
+    const response = await API.put(
+      `players/bookings/${playerId}/update/${bookingId}`,
       bookingData
     );
-    return response.data; // Return the updated booking data or success message
+    return response.data;
   } catch (error) {
-    console.error("Error updating booking:", error);
-    return null; // Handle error appropriately
+    toast.error("Error updating booking");
+    // console.error("Error updating booking:", error);
+    return null;
   }
 };
 
-// Delete a booking
 export const deleteBooking = async (playerId, bookingId) => {
   try {
-    const response = await axios.delete(
-      `${API_BASE_URL}/${playerId}/delete/${bookingId}`
+    const response = await API.delete(
+      `players/bookings/${playerId}/delete/${bookingId}`
     );
-    return response.data; // Return the success response
+    return response.data;
   } catch (error) {
-    console.error("Error deleting booking:", error);
-    return null; // Handle error appropriately
+    toast.error("Error deleting booking");
+    // console.error("Error deleting booking:", error);
+    return null;
   }
 };
 
 export const getBookingById = async (bookingId) => {
   try {
-    const response = await axios.get(
-      `http://localhost:8080/booking/${bookingId}`
-    );
-    return response.data; // ✅ Return single booking object
+    const response = await API.get(`players/bookings/${bookingId}`);
+    return response.data; //
   } catch (error) {
-    console.error("Error fetching booking by ID:", error);
+    toast.error("Error fetching booking by ID");
+    // console.error("Error fetching booking by ID:", error);
     return null;
   }
 };

@@ -23,6 +23,8 @@ import UpdateCourtForm from "./Screens/UpdateCourtForm";
 import VenueListByLocality from "./Components/VenueListByLocality";
 import VenueListBySports from "./Components/VenueListBySports";
 import AdminDashboard from "./Screens/Admin";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
@@ -70,6 +72,7 @@ function App() {
           </Route>
         </Routes>
       </Router>
+      <ToastContainer />
     </>
   );
 }

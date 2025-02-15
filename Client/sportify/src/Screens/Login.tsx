@@ -1,9 +1,13 @@
+
+
 import React from "react";
 import { Link } from "react-router-dom";
 import { TEInput, TERipple } from "tw-elements-react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../Services/loginService";
 import { useState } from "react";
+import API from "../Services/api";
+import { toast } from "react-toastify";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -13,18 +17,19 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
-      const response = await login(email, password); // API call
-      const { role } = response; // Extract role from response
-      setUserRole(role); // Store role in state
 
-      const { id, username, isActive } = response;
+       const response = await API.post("/signin", { email, password });
+      const { token, user } = response.data;
 
-      sessionStorage.setItem("id", id);
-      sessionStorage.setItem("username", username);
-      sessionStorage.setItem("isActive", isActive);
-      sessionStorage.setItem("role", role);
+      const { role } = user; 
+      setUserRole(role); 
 
-      // Redirect based on role
+      const { id, username, isActive } = user;
+
+      sessionStorage.setItem("token", token);
+      sessionStorage.setItem("id", user.id);
+      sessionStorage.setItem("role", user.role);
+
       if (role === "ADMIN") {
         navigate("/admin-dashboard");
       } else if (role === "PLAYER") {
@@ -32,10 +37,11 @@ export default function Login() {
       } else if (role === "FACILITYOWNER") {
         navigate("/MainContent");
       } else {
-        navigate("/"); // Default fallback
+        navigate("/"); 
       }
     } catch (error) {
-      console.error("Login failed:", error);
+      toast.error("Invalid credentials. Please try again.");
+      // console.error("Login failed:", error);
     }
   };
 
@@ -153,5 +159,4 @@ export default function Login() {
     </section>
   );
 }
-
 

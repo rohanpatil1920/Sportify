@@ -2,10 +2,12 @@
 import React, { useEffect, useState } from "react";
 import { getPlayerBookings } from "../Services/bookingServices";
 import { CalendarIcon, ClockIcon } from "lucide-react";
+import { toast } from "react-toastify";
+import API from "../Services/api";
 
 export default function BookingHistoryPage() {
   const playerId = sessionStorage.getItem("id");
-  console.log(playerId); // Replace with actual logged-in player ID
+  // console.log(playerId);
   const [bookingHistory, setBookingHistory] = useState([]);
 
   useEffect(() => {
@@ -14,15 +16,17 @@ export default function BookingHistoryPage() {
 
   const fetchBookingHistory = async () => {
     try {
-      // Fetch all bookings
       const data = await getPlayerBookings(playerId);
       console.log(data);
-      const historyData = data.filter(
-        (booking) => new Date(booking.date) < new Date()
-      ); // Filter past bookings
+      const historyData = data.filter((booking) => {
+        const bookingDateTime = new Date(`${booking.date}T${booking.time}`);
+        return bookingDateTime < new Date();
+      });
+
       setBookingHistory(historyData);
     } catch (error) {
-      console.error("Error fetching booking history:", error);
+      toast.error("Error fetching booking history");
+      // console.error("Error fetching booking history:", error);
     }
   };
 

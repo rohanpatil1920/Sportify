@@ -1,9 +1,8 @@
-import axios from "axios";
-import { createUrl } from "./apiService";
+import API from "./api";
 
 export const register = async (username, email, password, contact) => {
   try {
-    const response = await axios.post(createUrl("users/signup/player"), {
+    const response = await API.post(`/signup/player`, {
       username,
       email,
       password,
@@ -17,7 +16,7 @@ export const register = async (username, email, password, contact) => {
 
 export const registerPartner = async (username, email, password, contact) => {
   try {
-    const response = await axios.post(createUrl("users/signup/facilityowner"), {
+    const response = await API.post(`/signup/facilityowner`, {
       username,
       email,
       password,
@@ -51,8 +50,8 @@ export const registerVenue = async (
       },
     };
 
-    const response = await axios.post(
-      createUrl(`venue/${ownerId}/register`),
+    const response = await API.post(
+      `/owners/${ownerId}/register`,
       VenueRequestDTO
     );
     return response.data;
@@ -68,10 +67,7 @@ export const registerCourt = async (ownerId, courtData) => {
     // sportsId,
     // pricePerHour
     // }
-    const response = await axios.post(
-      createUrl(`venue/${ownerId}/courts`),
-      courtData
-    );
+    const response = await API.post(`/owners/${ownerId}/courts`, courtData);
     return response.data;
   } catch (error) {
     return error.response.data;

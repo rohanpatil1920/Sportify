@@ -1,15 +1,19 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { toast } from "react-toastify";
+
 export default function App() {
   const [email, setEmail] = useState("");
 
   const handleSubscribe = () => {
     if (email) {
-      alert(`Subscribed with email: ${email}`);
+      toast.success(`Subscribed with email: ${email}`);
+      // alert(`Subscribed with email: ${email}`);
       setEmail(""); // Clear the input after submission
     } else {
-      alert("Please enter a valid email address.");
+      toast.error("Please enter a valid email address.");
+      // alert("Please enter a valid email address.");
     }
   };
   return (
@@ -90,7 +94,7 @@ export default function App() {
   {["Football", "Cricket", "Basketball", "Tennis"].map((sport) => (
     <p key={sport} className="mb-4">
       <Link
-        to={`/venues?sport=${sport.toUpperCase()}`}
+        to={`/venuelistbylocality?sport=${sport.toUpperCase()}`}
         className="text-white hover:text-white hover:underline dark:text-neutral-200 focus:text-white"
       >
         {sport}
@@ -171,13 +175,7 @@ export default function App() {
             "linear-gradient(130deg, rgba(11,185,1,1) 0%, rgba(41,121,9,1) 45%, rgba(2,102,6,1) 100%)",
         }}
       >
-        <span className="text-white"> &copy; 2025 Copyright reserved to </span>
-        <a
-          className="font-semibold text-neutral-50 dark:text-neutral-50 hover:text-white hover:underline"
-          href="https://tw-elements.com/"
-        >
-          Sportify
-        </a>
+        <span className="text-white"> &copy; 2025 Copyright reserved to Sportify</span>
       </div>
     </footer>
   );
