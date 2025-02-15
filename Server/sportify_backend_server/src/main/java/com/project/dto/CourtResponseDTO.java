@@ -19,5 +19,5 @@ import lombok.ToString;
 public class CourtResponseDTO extends SuperDTO {
 	private BigDecimal pricePerHour;
 	private SportResponseDTO sport;
-	private VenueRequestDTO venue;
+	private VenueResponseDTO venue;
 }

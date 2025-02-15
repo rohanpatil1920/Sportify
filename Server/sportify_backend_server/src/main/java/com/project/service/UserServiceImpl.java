@@ -1,7 +1,17 @@
 package com.project.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,9 +36,12 @@ import com.project.repository.FacilityOwnerRepository;
 import com.project.repository.PlayerRepository;
 import com.project.repository.UserRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 @Transactional
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Autowired
 	private UserRepository userRepository;
@@ -48,19 +61,24 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private ModelMapper modelMapper;
 
-//	@Autowired
-//	private PasswordEncoder passwordEncoder;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Override
 	public UserResponseDTO userSignIn(UserLoginRequestDTO dto) {
-		User user = userRepository.findByEmailAndPassword(dto.getEmail(), dto.getPassword())
+
+		User user = userRepository.findByEmail(dto.getEmail())
 				.orElseThrow(() -> new AuthenticationException("Invalid Email or Password"));
+
+		if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+			throw new AuthenticationException("Invalid Email or Password");
+		}
 
 		// update here: checking if the user is deleted or not 31 Jan night
 		if (!user.getIsActive()) {
 			throw new AuthenticationException("Account is deactivated. Please contact admin.");
 		}
-
+		log.info("Signing in user: {}", dto.getEmail());
 		return modelMapper.map(user, UserResponseDTO.class);
 	}
 
@@ -71,9 +89,9 @@ public class UserServiceImpl implements UserService {
 
 //		dto.setRole(UserRole.PLAYER);
 		Player player = modelMapper.map(dto, Player.class);
-//		player.setPassword(passwordEncoder.encode(dto.getPassword()));
+		player.setPassword(passwordEncoder.encode(dto.getPassword()));
 		player.setRole(UserRole.PLAYER);
-		player.setPassword(dto.getPassword());
+//		player.setPassword(dto.getPassword());
 		player.setIsActive(true);
 		Player savedPlayer = playerRepository.save(player);
 
@@ -86,9 +104,9 @@ public class UserServiceImpl implements UserService {
 			throw new ApiException("Email already exists");
 
 		FacilityOwner facilityOwner = modelMapper.map(dto, FacilityOwner.class);
-//		facilityOwner.setPassword(passwordEncoder.encode(dto.getPassword()));
+		facilityOwner.setPassword(passwordEncoder.encode(dto.getPassword()));
 		facilityOwner.setRole(UserRole.FACILITYOWNER);
-		facilityOwner.setPassword(dto.getPassword());
+//		facilityOwner.setPassword(dto.getPassword());
 		facilityOwner.setIsActive(true);
 		FacilityOwner savedFacilityOwner = facilityOwnerRepository.save(facilityOwner);
 
@@ -102,9 +120,9 @@ public class UserServiceImpl implements UserService {
 			throw new ApiException("Email already exists");
 
 		Admin admin = modelMapper.map(dto, Admin.class);
-//		admin.setPassword(passwordEncoder.encode(dto.getPassword()));
+		admin.setPassword(passwordEncoder.encode(dto.getPassword()));
 		admin.setRole(UserRole.ADMIN);
-		admin.setPassword(dto.getPassword());
+//		admin.setPassword(dto.getPassword());
 		admin.setIsActive(true);
 		Admin savedAdmin = adminRepository.save(admin);
 
@@ -146,7 +164,7 @@ public class UserServiceImpl implements UserService {
 		user.setContact(userDTO.getContact());
 
 		if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
-			user.setPassword(userDTO.getPassword());
+			user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 		}
 
 		userRepository.save(user);
@@ -170,6 +188,42 @@ public class UserServiceImpl implements UserService {
 
 		deletionRequestRepository.save(deletionRequest);
 		return new ApiResponse("Deletion request submitted. Awaiting admin approval.");
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User user = userRepository.findByEmail(username)
+				.orElseThrow(() -> new AuthenticationException("Invalid Email or Password"));
+
+		// Here we should add authorities (roles) to the user
+		return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
+				user.getIsActive(), true, // account is not expired
+				true, // credentials are not expired
+				true, // account is not locked
+				getAuthorities(user) // Pass roles as authorities
+		);
+	}
+
+	private Collection<? extends GrantedAuthority> getAuthorities(User user) {
+		List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+
+		// Add multiple roles for user if needed
+		if (user.getRole() != null) {
+			authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
+		}
+
+		// If user has multiple roles, make sure all roles are assigned here
+		if (user instanceof Player) {
+			authorities.add(new SimpleGrantedAuthority("ROLE_PLAYER"));
+		}
+		if (user instanceof FacilityOwner) {
+			authorities.add(new SimpleGrantedAuthority("ROLE_FACILITYOWNER"));
+		}
+		if (user instanceof Admin) {
+			authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+		}
+
+		return authorities;
 	}
 
 }
