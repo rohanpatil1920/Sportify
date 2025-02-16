@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import API from "../Services/api";
+import { toast } from "react-toastify";
 
 const UpdateVenueForm = () => {
   const { venueId } = useParams<{ venueId: string }>(); 
@@ -13,12 +15,13 @@ const UpdateVenueForm = () => {
   useEffect(() => {
     const fetchVenueDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/venue/${venueId}`);
+        const response = await API.get(`/venue/${venueId}`);
         const { name, description } = response.data;
         setName(name);
         setDescription(description);
       } catch (error) {
-        console.error("Error fetching venue details:", error);
+        toast.error("Error fetching venue details. Please try again.");
+        // console.error("Error fetching venue details:", error);
         alert("Error fetching venue details.");
       } finally {
         setLoading(false);
@@ -31,8 +34,8 @@ const UpdateVenueForm = () => {
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.put(
-        `http://localhost:8080/venue/${ownerId}/update/${venueId}`,
+      const response = await API.put(
+        `/owners/${ownerId}/update/${venueId}`,
         null, 
         {
           params: {
@@ -43,13 +46,16 @@ const UpdateVenueForm = () => {
       );
 
       if (response.status === 200) {
+        toast.success("Venue updated successfully!");
         alert("Venue updated successfully!");
         navigate("/MainContent"); 
       } else {
+        toast.error("Error updating venue.");
         alert("Error updating venue.");
       }
     } catch (error) {
-      console.error("Error updating venue:", error);
+      toast.error("Error updating venue. Please try again.");
+      // console.error("Error updating venue:", error);
       alert("Error updating venue. Please try again.");
     }
   };

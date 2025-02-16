@@ -1,5 +1,12 @@
 package com.project.pojos;
 
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -24,7 +31,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString(callSuper = true)
-public class User extends SuperEntity {
+public class User extends SuperEntity implements UserDetails {
 
 	@Column(length = 25, unique = true, nullable = false)
 	private String username;
@@ -65,6 +72,12 @@ public class User extends SuperEntity {
 		this.contact = contact;
 		this.isActive = isActive;
 		this.role = role;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(this.role.name());
+		return authorities;
 	}
 
 }

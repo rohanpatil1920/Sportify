@@ -25,4 +25,5 @@ public class UserResponseDTO {
 	@JsonProperty(access = Access.READ_ONLY)
 	private UserRole role;
 	private Boolean isActive;
+	private String token;
 }

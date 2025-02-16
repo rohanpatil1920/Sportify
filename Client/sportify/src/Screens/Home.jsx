@@ -3,9 +3,11 @@ import React, { useEffect, useState } from "react";
 import { CalendarIcon, ClockIcon, Trash, Edit } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getPlayerBookings, deleteBooking } from "../Services/bookingServices";
+import { toast } from "react-toastify";
+import API from "../Services/api";
 
 export default function HomePage() {
-  const playerId = sessionStorage.getItem("id"); // Replace with actual logged-in player ID
+  const playerId = sessionStorage.getItem("id");
   const [upcomingBookings, setUpcomingBookings] = useState([]);
 
   useEffect(() => {
@@ -17,7 +19,8 @@ export default function HomePage() {
       const upcomingData = await getPlayerBookings(playerId);
       setUpcomingBookings(upcomingData);
     } catch (error) {
-      console.error("Error fetching bookings:", error);
+      toast.error("Error fetching bookings");
+      // console.error("Error fetching bookings:", error);
     }
   };
 
@@ -25,8 +28,9 @@ export default function HomePage() {
     if (window.confirm("Are you sure you want to delete this booking?")) {
       const result = await deleteBooking(playerId, bookingId);
       if (result) {
+        toast.success("Booking deleted successfully!");
         alert("Booking deleted successfully!");
-        fetchBookings(); // Re-fetch bookings after deleting
+        fetchBookings();
       }
     }
   };

@@ -31,6 +31,9 @@ import com.project.repository.FacilityOwnerRepository;
 import com.project.repository.SportRepository;
 import com.project.repository.VenueRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 @Transactional
 public class VenueServiceImpl implements VenueService {
@@ -274,12 +277,14 @@ public class VenueServiceImpl implements VenueService {
 		SportResponseDTO sport = new SportResponseDTO(court.getSport().getSportName(),
 				court.getSport().getEquipmentChoice());
 
-		VenueRequestDTO venue = new VenueRequestDTO(court.getVenue().getName(), court.getVenue().getDescription(),
-				court.getVenue().getLocality(),
-				new AddressDTO(court.getVenue().getVenueAddress().getAdrLine1(),
-						court.getVenue().getVenueAddress().getAdrLine2(), court.getVenue().getVenueAddress().getCity(),
-						court.getVenue().getVenueAddress().getState(), court.getVenue().getVenueAddress().getCountry(),
-						court.getVenue().getVenueAddress().getZipCode()));
+		AddressDTO address = new AddressDTO(court.getVenue().getVenueAddress().getAdrLine1(),
+				court.getVenue().getVenueAddress().getAdrLine2(), court.getVenue().getVenueAddress().getCity(),
+				court.getVenue().getVenueAddress().getState(), court.getVenue().getVenueAddress().getCountry(),
+				court.getVenue().getVenueAddress().getZipCode());
+
+		VenueResponseDTO venue = new VenueResponseDTO(court.getVenue().getId(), court.getVenue().getName(),
+				court.getVenue().getDescription(), court.getVenue().getLocality(), address,
+				court.getVenue().getFacilityOwner().getId());
 
 		return new CourtResponseDTO(court.getPricePerHour(), sport, venue);
 

@@ -1,9 +1,8 @@
-import axios from "axios";
-import {createUrl} from "./apiService"
+import API from "./api";
 
 export const login = async (email, password) => {
   try {
-    const response = await axios.post(createUrl("users/signin"), {
+    const response = await API.post(`users/signin`, {
       email,
       password,
     });
@@ -11,4 +10,4 @@ export const login = async (email, password) => {
   } catch (error) {
     return error.response.data;
   }
-}
+};

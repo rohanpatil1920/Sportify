@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const Sidebar = () => {
   return (
@@ -7,16 +7,28 @@ const Sidebar = () => {
         <span className="text-2xl font-extrabold">Turf Booking</span>
       </div>
       <nav>
-        <a href="#" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">
+        <a
+          href="#"
+          className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700"
+        >
           Dashboard
         </a>
-        <a href="#" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">
+        <a
+          href="#"
+          className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700"
+        >
           Bookings
         </a>
-        <a href="#" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">
+        <a
+          href="#"
+          className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700"
+        >
           Courts
         </a>
-        <a href="#" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">
+        <a
+          href="#"
+          className="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700"
+        >
           Players
         </a>
       </nav>

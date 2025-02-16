@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { TEInput, TERipple } from "tw-elements-react";
 import { useState } from "react";
 import { register } from "../Services/registerService";
+import API from "../Services/api";
+import { toast } from "react-toastify";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -14,14 +16,15 @@ export default function Register() {
 
   const handleRegister = async () => {
     try {
-      const response = await register(username, email, password, contact); // API call
-      const { role } = response; // Extract role from response
-      setRole(role); // Store role in state
+      const response = await register(username, email, password, contact); 
+      const { role } = response; 
+      setRole(role); 
 
       alert(response.message);
-
+      toast.success("Registration successful. Please login to continue.");
       navigate("/login");
     } catch (error) {
+      alert("There was an issue registering your account.");
       console.error("Login failed:", error);
     }
   };
